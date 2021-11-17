@@ -24,21 +24,10 @@ router.put("/api/workouts/:id", ({body, params}, res) => {
     });
 });
 
-//router.get("/api/workouts", (req, res) => {
-//add totalDuration 
-  //  Workout.aggregate([{
-    //    $group: {_id: null,
-      //  "totalDuration": {
-        //    $sum: "$Amount"
-        //}
-    //}
-    //}])
-    //.then((dbWorkout) => {
-      //  res.json(dbWorkout);
-    //});
-//});
-router.get("/api/workouts", (req, res) => {
-    Workout.find({}).then(data => res.json(data))
+router.get("/api/workouts", async (req, res) => {
+    Workout.aggregate(
+        [
+            { $addFields: {totalDuration:{ $sum: "$exercises.duration"}}}]).then(data => res.json(data))
     .catch(err => {
         console.log("error", err);
         res.json(err);
